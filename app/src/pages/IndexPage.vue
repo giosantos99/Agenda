@@ -301,8 +301,6 @@ export default {
           color: 'positive',
           message: 'Evento adicionado com sucesso!'
         })
-
-        console.log(this.events)
       } catch (e) {
         this.$q.notify({
           color: 'negative',
