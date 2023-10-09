@@ -26,4 +26,10 @@ Firebase (banco de dados).
 3 - Rodar o projeto com o comando: quasar dev # OU: yarn quasar dev # OU: npx quasar dev
 
 
-Segue abaixo um tutorial de como utilizar
+Preview Layout para versão web
+
+![web](https://github.com/giosantos99/Agenda/assets/143277271/9b8311bc-bff4-4a55-9c8f-e4b7f0c8743f)
+
+Preview Layout para versão web
+
+![mobile](https://github.com/giosantos99/Agenda/assets/143277271/7452e8e0-9647-4d94-859e-0160d0c606c0)
