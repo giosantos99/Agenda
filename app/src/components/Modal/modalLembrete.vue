@@ -16,7 +16,7 @@
     <q-form @submit="handleEvento">
       <q-card-section
         class="q-gutter-y-sm no-wrap scroll"
-        style="max-height: calc(100vh - 170px);"
+        style="max-height: 70vh"
       >
         <q-input
           v-model="form.title"

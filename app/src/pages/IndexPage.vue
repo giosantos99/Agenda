@@ -1,161 +1,161 @@
 <template>
-  <q-page class="q-pa-sm">
-    <template v-if="!loading">
-      <section>
-        <CalendarioHeader
-          :date="calendario.date"
-          @changeMonth="onChangeMonth"
-        />
-        
-        <q-calendar-month
-          v-if="calendario.month"
-          v-model="calendario.selectedDate"
-          ref="calendar"
-          locale="pt-br"
-          date-type="round"
-          date-align="right"
-          month-label-size="md"
-          :class="!$q.screen.lt.md ? 'container' : ''"
-          :hoverable="true"
-          :focusable="true"
-          :focus-type="['day']"
-          :short-weekday-label="$q.screen.lt.md"
-          :short-month-label="$q.screen.lt.md"
-          :day-min-height="85"
-          :day-height="85"
-          animated
-          bordered
-          @moved="onMoved"
-          @click-date="onClickDate"
-          @click-day="onClickDay"
-        >
-          <template #day="{ scope: { timestamp } }">
-            <template v-if="!$q.screen.lt.md">
-              <div
-                v-for="(event, index) in getEvents(timestamp.date)"
-                :key="index"
-              >
-                <q-badge
-                  class="full-width text-white text-weight-medium"
-                  :class="`bg-${bgChips(event.important)} ${index < 2 ? 'cursor-pointer' : ''}`"
-                  @click.stop="index < 2 ? handleModal({ modal: true, newEvent: false, campos: event }) : ''"
-                >
-                  <div class="title q-calendar__ellipsis">
-                    {{ index < 2 ? event.title : `+${(getEvents(timestamp.date).length - 2)} evento(s)` }}
-                  </div>
-                  <q-tooltip
-                    v-if="event.details && index < 2"
-                  >
-                    {{ event.details }}
-                  </q-tooltip>
-                </q-badge>
-              </div>
-            </template>
-            <template v-else>
+<q-page class="q-pa-sm">
+  <template v-if="!loading">
+    <section>
+      <CalendarioHeader
+        :date="calendario.date"
+        @changeMonth="onChangeMonth"
+      />
+      
+      <q-calendar-month
+        v-if="calendario.month"
+        v-model="calendario.selectedDate"
+        ref="calendar"
+        locale="pt-br"
+        date-type="round"
+        date-align="right"
+        month-label-size="md"
+        :class="!$q.screen.lt.md ? 'container' : ''"
+        :hoverable="true"
+        :focusable="true"
+        :focus-type="['day']"
+        :short-weekday-label="$q.screen.lt.md"
+        :short-month-label="$q.screen.lt.md"
+        :day-min-height="85"
+        :day-height="85"
+        animated
+        bordered
+        @moved="onMoved"
+        @click-date="onClickDate"
+        @click-day="onClickDay"
+      >
+        <template #day="{ scope: { timestamp } }">
+          <template v-if="!$q.screen.lt.md">
+            <div
+              v-for="(event, index) in getEvents(timestamp.date)"
+              :key="index"
+            >
               <q-badge
-                v-if="getEvents(timestamp.date).length"
-                class="full-width text-white text-weight-medium bg-pink flex flex-center"
-                style="margin-top: 40px;"
+                class="full-width text-white text-weight-medium"
+                :class="`bg-${bgChips(event.important)} ${index < 2 ? 'cursor-pointer' : ''}`"
+                @click.stop="index < 2 ? handleModal({ modal: true, newEvent: false, campos: event }) : ''"
               >
                 <div class="title q-calendar__ellipsis">
-                  {{ `+${getEvents(timestamp.date).length}` }}
+                  {{ index < 2 ? event.title : `+${(getEvents(timestamp.date).length - 2)} evento(s)` }}
                 </div>
-              </q-badge>
-            </template>
-          </template>
-        </q-calendar-month>
-
-        <div v-else class="row justify-center">
-          <div class="column full-width container">
-            <q-calendar-day
-              v-model="calendario.selectedDate"
-              ref="calendar"
-              view="day"
-              locale="pt-br"
-              animated
-            >
-              <template #head-day-event="{ scope: { timestamp } }">
-                <div
-                  v-if="getEventsSorted(timestamp.date).length"
-                  class="q-pa-sm no-wrap scroll q-pb-xl"
-                  style="max-height: calc(100vh - 200px);"
+                <q-tooltip
+                  v-if="event.details && index < 2"
                 >
-                  <q-list
-                    bordered
-                    class="rounded-borders"
+                  {{ event.details }}
+                </q-tooltip>
+              </q-badge>
+            </div>
+          </template>
+          <template v-else>
+            <q-badge
+              v-if="getEvents(timestamp.date).length"
+              class="full-width text-white text-weight-medium bg-pink flex flex-center"
+              style="margin-top: 40px;"
+            >
+              <div class="title q-calendar__ellipsis">
+                {{ `+${getEvents(timestamp.date).length}` }}
+              </div>
+            </q-badge>
+          </template>
+        </template>
+      </q-calendar-month>
+
+      <div v-else class="row justify-center">
+        <div class="column full-width container">
+          <q-calendar-day
+            v-model="calendario.selectedDate"
+            ref="calendar"
+            view="day"
+            locale="pt-br"
+            animated
+          >
+            <template #head-day-event="{ scope: { timestamp } }">
+              <div
+                v-if="getEventsSorted(timestamp.date).length"
+                class="q-pa-sm no-wrap scroll q-pb-xl"
+                style="max-height: calc(100vh - 200px);"
+              >
+                <q-list
+                  bordered
+                  class="rounded-borders"
+                >
+                  <q-item
+                    v-for="event in getEventsSorted(timestamp.date)"
+                    :key="event.id"
+                    clickable
+                    v-ripple
+                    style="border: 1px solid #ccc"
+                    @click="handleModal({ modal: true, newEvent: false, campos: event })"
                   >
-                    <q-item
-                      v-for="event in getEventsSorted(timestamp.date)"
-                      :key="event.id"
-                      clickable
-                      v-ripple
-                      style="border: 1px solid #ccc"
-                      @click="handleModal({ modal: true, newEvent: false, campos: event })"
-                    >
-                    <q-item-section
-                      avatar
-                      class="q-pr-md"
-                      style="min-width: auto;"
-                    >
-                      <q-icon name="label_important" :color="bgChips(event.important)" />
-                    </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="text-weight-bold">{{ event.title }}</q-item-label>
-                        <q-item-label
-                          class="ellipsis text-weight-medium"
-                          caption
-                          style="max-width: calc(100vw - 170px)"
-                        >
-                          {{ event.details }}
-                        </q-item-label>
-                      </q-item-section>
-
-                      <q-item-section
-                        v-if="event.time"
-                        side
-                        top
+                  <q-item-section
+                    avatar
+                    class="q-pr-md"
+                    style="min-width: auto;"
+                  >
+                    <q-icon name="label_important" :color="bgChips(event.important)" />
+                  </q-item-section>
+                    <q-item-section>
+                      <q-item-label class="text-weight-bold">{{ event.title }}</q-item-label>
+                      <q-item-label
+                        class="ellipsis text-weight-medium"
+                        caption
+                        style="max-width: calc(100vw - 170px)"
                       >
-                        <q-icon name="schedule" color="dark" />
-                        <q-item-label
-                          class="text-weight-medium"
-                          caption
-                        >
-                          {{ event.time }}
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </div>
-                <div v-else class="flex flex-center q-pt-md">
-                  <p>Nenhum evento adicionado!</p>
-                </div>
-              </template>
-            </q-calendar-day>
-          </div>
+                        {{ event.details }}
+                      </q-item-label>
+                    </q-item-section>
+
+                    <q-item-section
+                      v-if="event.time"
+                      side
+                      top
+                    >
+                      <q-icon name="schedule" color="dark" />
+                      <q-item-label
+                        class="text-weight-medium"
+                        caption
+                      >
+                        {{ event.time }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+              <div v-else class="flex flex-center q-pt-md">
+                <p>Nenhum evento adicionado!</p>
+              </div>
+            </template>
+          </q-calendar-day>
         </div>
+      </div>
 
-        <CalendarioFooter
-          :month="calendario.month"
-          @addEvento="handleModal({ modal: true, newEvent: true, campos: {} })"
-          @voltarCalendario="calendario.month = true"
-          @changeMonth="onChangeMonth"
+      <CalendarioFooter
+        :month="calendario.month"
+        @addEvento="handleModal({ modal: true, newEvent: true, campos: {} })"
+        @voltarCalendario="calendario.month = true"
+        @changeMonth="onChangeMonth"
+      />
+
+      <q-dialog v-model="form.modal" @blur="OnLimparForm">
+        <modalLembrete
+          v-bind="form"
+          @addEvento="OnAddEvento"
+          @editarEvento="OnEditarEvento"
+          @excluirEvento="OnExcluirEvento"
+          @closeModal="OnLimparForm"
         />
-
-        <q-dialog v-model="form.modal" @blur="OnLimparForm">
-          <modalLembrete
-            v-bind="form"
-            @addEvento="OnAddEvento"
-            @editarEvento="OnEditarEvento"
-            @excluirEvento="OnExcluirEvento"
-            @closeModal="OnLimparForm"
-          />
-        </q-dialog>
-      </section>
-    </template>
-    <template v-else>
-      <q-skeleton square style="min-height: 80vh;" class="q-pt-md" />
-    </template>
-  </q-page>
+      </q-dialog>
+    </section>
+  </template>
+  <template v-else>
+    <q-skeleton square style="min-height: 80vh;" class="q-pt-md" />
+  </template>
+</q-page>
 </template>
 
 <script>
@@ -197,16 +197,7 @@ export default {
         }
       },
 
-      events: [
-        {
-          id: 1,
-          title: 'Modelo',
-          details: 'Descrição do evento modelo',
-          date: this.randomDate('01'),
-          important: 'baixo',
-          time: '08:00'
-        }
-      ]
+      events: []
     }
   },
 
@@ -215,11 +206,11 @@ export default {
       try {
         this.loading = true
 
-        const response = await this.$http('agenda.json')
+        const response = await this.$axios.get('http://localhost:3000/agenda')
 
         const { data } = await response
 
-        for (const key in data) this.events.push({ id: key, ...data[key] })
+        this.events = Object.values(data)
       } catch (e) {
         this.$q.notify({
           color: 'negative',
@@ -234,10 +225,8 @@ export default {
       this.handleModal({ modal: false, newEvent: false, campos: {} })
     },
 
-    OnExcluirEvento (evento) {
+    OnExcluirEvento ({ id }) {
       try {
-        const { id: idForm } = evento
-
         this.loading = true
 
         this.$q.dialog({
@@ -246,14 +235,14 @@ export default {
           ok: { flat: false, color: 'primary' },
           cancel: { flat: true, color: 'primary' }
         }).onOk(async () => {
-          await this.$http.delete(`agenda/${idForm}.json`)
-
-          this.events = this.events.filter(({ id }) => id !== idForm)
+          await this.$axios.delete(`http://localhost:3000/agenda/${id}`)
 
           this.$q.notify({
             color: 'positive',
             message: 'Evento deletado com sucesso!'
           })
+
+          this.handleEventos()
         })
 
         this.OnLimparForm()
@@ -274,6 +263,14 @@ export default {
       return result
     },
 
+    createId () {
+      const getId = this.events.map(item => item.id.toString())
+
+      const maxId = Math.max(...getId) + 1
+
+      return this.events.length ? maxId.toString() : '1'
+    },
+
     async OnAddEvento (evento) {
       const sameEvt = this.hasExists(evento.title, evento.date)
 
@@ -289,11 +286,9 @@ export default {
       try {
         this.loading = true
 
-        const response = await this.$http.post('agenda.json', evento)
+        const id =  this.createId()
 
-        const { data } = await response
-
-        this.events.push({ ...evento, id: data.name })
+        await this.$axios.post('http://localhost:3000/agenda', { ...evento, id })
 
         this.OnLimparForm()
 
@@ -301,6 +296,8 @@ export default {
           color: 'positive',
           message: 'Evento adicionado com sucesso!'
         })
+
+        this.handleEventos()
       } catch (e) {
         this.$q.notify({
           color: 'negative',
@@ -326,13 +323,7 @@ export default {
       try {
         this.loading = true
 
-        await this.$http.patch(`agenda/${evento.id}.json`, evento)
-
-        this.events = this.events.map(item => {
-          if (item.id === evento.id) return { ...evento }
-
-          return item
-        })
+        await this.$axios.patch(`http://localhost:3000/agenda/${evento.id}`, evento)
 
         this.OnLimparForm()
 
@@ -340,6 +331,8 @@ export default {
           color: 'positive',
           message: 'Evento editado com sucesso!'
         })
+
+        this.handleEventos()
       } catch (e) {
         this.$q.notify({
           color: 'negative',

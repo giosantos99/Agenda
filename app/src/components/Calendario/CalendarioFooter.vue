@@ -29,7 +29,7 @@
       round
       @click="$emit('changeMonth', 'moveToToday')"
     >
-      <q-tooltip>Voltar ao mês atual</q-tooltip>
+      <q-tooltip anchor="bottom left" self="top middle">Voltar ao mês atual</q-tooltip>
     </q-btn>
   </div>
 </template>

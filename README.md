@@ -14,16 +14,18 @@ Axios (v1.2.1);
 
 SASS (pré processador CSS);
 
-Firebase (banco de dados).
+Json Server (banco de dados).
 
 
 **Como rodar o projeto:**
 
-1 - Entrar na pasta app
+1 - Entrar na pasta app;
 
-2 - Baixar as dependências com o comando: npm i
+2 - Baixar as dependências com o comando: npm i;
 
-3 - Rodar o projeto com o comando: quasar dev # OU: yarn quasar dev # OU: npx quasar dev
+3 - Para rodar o front-end usar o comando: quasar dev # OU: yarn quasar dev # OU: npx quasar dev;
+
+4 - Para rodar o back-end usar o comando: npm run backend.
 
 
 Preview Layout para versão web
